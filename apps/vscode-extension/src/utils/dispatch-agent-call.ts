@@ -12,6 +12,7 @@ import * as vscode from 'vscode';
 import type { PromptRequest } from '@stagewise/extension-toolbar-srpc-contract';
 import { isClineInstalled } from './is-cline-installed';
 import { callTraeAgent } from './call-trae-agent';
+import { callClaudeCodeTerminal } from './call-claude-code-terminal';
 
 export async function dispatchAgentCall(request: PromptRequest) {
   const ide = getCurrentIDE();
@@ -22,7 +23,11 @@ export async function dispatchAgentCall(request: PromptRequest) {
       return await callCursorAgent(request);
     case 'WINDSURF':
       return await callWindsurfAgent(request);
-    case 'VSCODE':
+    case 'VSCODE': {
+      // Check if user wants to use Claude Code terminal (can be configured)
+      const useClaudeTerminal = true;
+      if (useClaudeTerminal) return await callClaudeCodeTerminal(request);
+
       if (isClineInstalled()) return await callClineAgent(request);
       if (isRoocodeInstalled()) return await callRoocodeAgent(request);
       if (isKilocodeInstalled()) return await callKilocodeAgent(request);
@@ -33,6 +38,7 @@ export async function dispatchAgentCall(request: PromptRequest) {
         );
         break;
       }
+    }
     case 'UNKNOWN':
       vscode.window.showErrorMessage(
         'Failed to call agent: IDE is not supported',

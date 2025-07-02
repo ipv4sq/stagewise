@@ -31,6 +31,16 @@
         "command": "stagewise.showGettingStarted",
         "title": "Show Getting Started Guide",
         "category": "stagewise"
+      },
+      {
+        "command": "stagewise.testClaudeTerminal",
+        "title": "Test Claude Terminal (Send 'hello')",
+        "category": "stagewise"
+      },
+      {
+        "command": "stagewise.openClaudeTerminal",
+        "title": "Open Claude Terminal",
+        "category": "stagewise"
       }
     ],
     "configuration": {
@@ -46,6 +56,11 @@
             "usesOnlineServices"
           ],
           "markdownDescription": "Enable anonymous usage data collection to help improve the product. No personal data is collected.\n\nRead more about our [telemetry data collection](https://github.com/stagewise-io/stagewise/blob/main/apps/vscode-extension/TELEMETRY.md)."
+        },
+        "stagewise.useClaudeTerminal": {
+          "type": "boolean",
+          "default": false,
+          "description": "Send prompts to a Claude Code terminal instead of using other AI extensions"
         }
       }
     }

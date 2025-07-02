@@ -21,6 +21,7 @@ import { ToolbarUpdateNotificator } from 'src/services/toolbar-update-notificato
 import { ToolbarIntegrationNotificator } from 'src/services/toolbar-integration-notificator';
 import { WorkspaceService } from 'src/services/workspace-service';
 import { RegistryService } from 'src/services/registry-service';
+import { registerTestClaudeTerminalCommand } from '../commands/test-claude-terminal';
 
 // Diagnostic collection specifically for our fake prompt
 const fakeDiagCollection =
@@ -148,7 +149,7 @@ export async function activate(context: vscode.ExtensionContext) {
             };
           }
           analyticsService.trackEvent(EventName.AGENT_PROMPT_TRIGGERED);
-
+          console.log(JSON.stringify(request));
           await dispatchAgentCall(request);
           sendUpdate.sendUpdate({
             sessionId: vscode.env.sessionId,
@@ -207,6 +208,9 @@ export async function activate(context: vscode.ExtensionContext) {
       },
     );
     context.subscriptions.push(showGettingStartedCommand);
+
+    // Register Claude terminal commands
+    registerTestClaudeTerminalCommand(context);
   } catch (error) {
     console.error('Error during extension activation:', error);
   }
