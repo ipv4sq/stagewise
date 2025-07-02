@@ -5,15 +5,25 @@ export async function callClaudeCodeTerminal(
   request: PromptRequest,
 ): Promise<void> {
   // Find the terminal named "node"
-  const claudeTerminal = vscode.window.terminals.find(
+  let claudeTerminal = vscode.window.terminals.find(
     (terminal) => terminal.name === 'node',
   );
 
   if (!claudeTerminal) {
-    vscode.window.showErrorMessage(
-      'Please create a terminal named "node" with Claude running first'
-    );
-    return;
+    // Create terminal with zsh and run Claude
+    claudeTerminal = vscode.window.createTerminal({
+      name: 'node',
+      shellPath: '/bin/bash',
+    });
+
+    // Show the terminal
+    claudeTerminal.show();
+
+    // Run Claude with permissions flag
+    claudeTerminal.sendText('claude --dangerously-skip-permissions', true);
+
+    // Wait for Claude to spin up (2 seconds)
+    await new Promise((resolve) => setTimeout(resolve, 2000));
   }
 
   // Show the terminal
@@ -29,6 +39,7 @@ export async function callClaudeCodeTerminal(
   claudeTerminal.sendText(prompt);
   // Send just a newline to trigger Enter
   claudeTerminal.sendText('', true);
+  claudeTerminal.sendText('', true);
 }
 
 // Helper function to send simple text to Claude Code terminal
@@ -36,19 +47,29 @@ export async function sendTextToClaudeTerminal(
   text: string,
   pressEnter = true,
 ): Promise<void> {
-  const claudeTerminal = vscode.window.terminals.find(
+  let claudeTerminal = vscode.window.terminals.find(
     (terminal) => terminal.name === 'node',
   );
 
   if (!claudeTerminal) {
-    vscode.window.showErrorMessage(
-      'Please create a terminal named "node" with Claude running first'
-    );
-    return;
+    // Create terminal with zsh and run Claude
+    claudeTerminal = vscode.window.createTerminal({
+      name: 'node',
+      shellPath: '/bin/zsh',
+    });
+
+    // Show the terminal
+    claudeTerminal.show();
+
+    // Run Claude with permissions flag
+    claudeTerminal.sendText('claude --dangerously-skip-permissions', true);
+
+    // Wait for Claude to spin up (2 seconds)
+    await new Promise((resolve) => setTimeout(resolve, 2000));
   }
 
   claudeTerminal.show();
-  
+
   if (pressEnter) {
     // Send text first, then send Enter separately
     claudeTerminal.sendText(text);
